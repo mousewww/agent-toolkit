@@ -45,7 +45,16 @@ def scan(path: Path) -> list[dict]:
     for root, dirs, files in os.walk(path):
         root_path = Path(root)
 
-        # 跳过缓存/VCS 目录的内部扫描，但把它们本身报出来
+        # 先记录缓存/VCS 目录本身，再跳过内部扫描
+        for d in dirs:
+            if d in CACHE_DIRS or d == ".git":
+                candidates.append({
+                    "type": "cache_dir",
+                    "path": str(root_path / d),
+                    "reason": "缓存/依赖目录，可清理后重建",
+                })
+
+        # 跳过缓存/VCS 目录的内部扫描
         dirs[:] = [d for d in dirs if d not in CACHE_DIRS and d != ".git"]
 
         # 空目录
@@ -56,14 +65,6 @@ def scan(path: Path) -> list[dict]:
                 "reason": "空目录，无子文件",
             })
             continue
-
-        for d in dirs:
-            if d in CACHE_DIRS:
-                candidates.append({
-                    "type": "cache_dir",
-                    "path": str(root_path / d),
-                    "reason": "缓存/依赖目录，可清理后重建",
-                })
 
         for f in files:
             fp = root_path / f
