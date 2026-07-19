@@ -89,6 +89,38 @@ def _is_simple_task(prompt_package) -> bool:
 
 ## 快速开始
 
+### 方式一：pip 安装（推荐）
+
+```bash
+# 从 PyPI 安装（发布后）
+pip install agent-toolkit
+
+# 或从源码安装
+pip install -e .
+```
+
+安装后获得两个 CLI 命令：
+
+```bash
+# 查看帮助
+agent-toolkit --help
+atk --help
+
+# 请求路由测试
+agent-toolkit route --raw "今天北京天气怎样"
+
+# 跑完整管线
+agent-toolkit run --file input.txt
+
+# 需求澄清模式
+agent-toolkit run --file input.txt --clarify
+
+# 冗余文件扫描
+agent-toolkit prune --path . --output prune_report.json
+```
+
+### 方式二：直接运行脚本（开发调试）
+
 ```bash
 # 1. 安装依赖
 pip install -r requirements.txt
@@ -97,14 +129,14 @@ pip install -r requirements.txt
 export OPENAI_API_KEY="sk-xxx"
 
 # 3. 测试最外层路由
-python pipeline/router.py --raw "今天北京天气怎样"
+python -m agent_toolkit.pipeline.router --raw "今天北京天气怎样"
 
 # 4. 跑完整管线（默认只生成结果，不写文件）
-python pipeline/runner.py --file input.txt
+python -m agent_toolkit.pipeline.runner --file input.txt
 
 # 5. 实际写文件（execute 阶段）
-python pipeline/dispatch.py --file prompt_output.json | \
-  python pipeline/execute.py --apply
+python -m agent_toolkit.pipeline.dispatch --file prompt_output.json | \
+  python -m agent_toolkit.pipeline.execute --apply
 ```
 
 ## 目录结构

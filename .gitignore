@@ -43,3 +43,7 @@ Thumbs.db
 
 # Backup files
 *.execute.bak
+
+# Qoder workspace
+.qoder/
+
